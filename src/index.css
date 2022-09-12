@@ -394,8 +394,14 @@ screen and (-ms-high-contrast:active) {
   --bs-link-color: #435ebe;
   --bs-link-hover-color: #364b98;
   --bs-code-color: #d63384;
-  --bs-highlight-bg: #fcf8e3
+  --bs-highlight-bg: #fcf8e3;
+
 }
+
+#root {
+  height: 95%;
+}
+
 
 *,
 :after,
@@ -419,7 +425,9 @@ body {
   font-weight: var(--bs-body-font-weight);
   line-height: var(--bs-body-line-height);
   margin: 0;
-  text-align: var(--bs-body-text-align)
+  text-align: var(--bs-body-text-align);
+
+  height: 100vh;
 }
 
 hr {
