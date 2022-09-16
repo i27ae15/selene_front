@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
-
-import './Chat.styles.css';
 
 import Message from '../message/Message.component';
+
+import './Chat.styles.css';
 
 const socket = new WebSocket(`ws://localhost:8000/chat/testing/`);
 
@@ -19,11 +18,37 @@ function Chat() {
 
     
     socket.onmessage = (data) => {
-        let message = {
-            'message': data.data,
-            'fromSelene': true,
-        };
-        setMessages([...messages, message]);
+        console.log(data);
+        let message = data.data;
+        let messageObject = {fromSelene: false};
+        let iterations = 0;
+        let separatorAt;
+
+        while (true){
+            
+            separatorAt = message.indexOf('%@%');
+
+            if (separatorAt == -1){
+                break;
+            }
+
+            if (iterations == 0){
+                messageObject.message = message.slice(0, separatorAt);
+            
+            } else if (iterations == 1){
+                messageObject.messageType = message.slice(0, separatorAt);
+            
+            } else if (iterations == 2){
+                messageObject.label = message.slice(0, separatorAt) == 'true';
+            }
+            message = message.slice(separatorAt + 3);
+            iterations++;
+
+        }
+
+        data.data.substring()
+
+        setMessages([...messages, messageObject]);
 
     }
 
@@ -42,67 +67,114 @@ function Chat() {
 
 
     return (
-        <div id="app" style={{display: 'flex', height:'100%', justifyContent: 'end', marginRight: '3%'}}>
+        
+
+
+
+        <section style={{backgroundColor: "#eee"}}>
+            <div className="container py-5">
+
+                <div className="row d-flex justify-content-center">
+                    <div className="col-md-10 col-lg-8 col-xl-6">
+
+                        <div className="card" id="chat2">
+                            <div className="card-header d-flex justify-content-between align-items-center p-3">
+                                <h5 className="mb-0">Chat</h5>
+                            </div>
+
+                            { socket && 
+                                (
+                                <div className="card-body" data-mdb-perfect-scrollbar="true" style={{position: "relative"}}>
+            
+                                {
+                                    messages.map(m => {
+                                        return <Message message={m.message} fromSelene={m.fromSelene} />
+                                    })
+                                }
+                                
+                                </div>
+                                )
+                            }
+
+
+                            <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 3" 
+                                style={{width: "40px", height: "100%"}} />
+                                <input type="text" className="form-control form-control-lg" id="exampleFormControlInput1" placeholder="Type message" value={currentMessage} onChange={(e) => setCurrentMessage(e.target.value)}/>
+                                <a className="ms-3" href="#!" onClick={sendMessage} ><i className="fas fa-paper-plane"></i>Send</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+
+        // <div id="app" style={{display: 'flex', height:'100%', justifyContent: 'end', marginRight: '3%'}}>
 
          
-            <div className="card" style={{width: '35%', height: '85%', alignSelf: 'end'}}>
-                <div className="card-header">
-                    <div className="media d-flex align-items-center">
-                        <div className="avatar me-3">
-                            <img src="assets/images/selene.JPG" alt="" />
-                            <span className="avatar-status bg-success"></span>
-                        </div>
-                        <div className="name flex-grow-1">
-                            <h6 className="mb-0">Selene</h6>
-                            <span className="text-xs">Online</span>
-                        </div>
-                        <button className="btn btn-sm">
-                            <i data-feather="x"></i>
-                        </button>
-                    </div>
-                </div>
-                <div className="card-body pt-4 bg-grey">
-                    <div className="chat-content" id="chat-body" >
-                    { socket && (
+        //     <div classNameName="card" style={{width: '35%', height: '85%', alignSelf: 'end'}}>
+        //         <div classNameName="card-header">
+        //             <div classNameName="media d-flex align-items-center">
+        //                 <div classNameName="avatar me-3">
+        //                     <img src="assets/images/selene.JPG" alt="" />
+        //                     <span classNameName="avatar-status bg-success"></span>
+        //                 </div>
+        //                 <div classNameName="name flex-grow-1">
+        //                     <h6 classNameName="mb-0">Selene</h6>
+        //                     <span classNameName="text-xs">Online</span>
+        //                 </div>
+        //                 <button classNameName="btn btn-sm">
+        //                     <i data-feather="x"></i>
+        //                 </button>
+        //             </div>
+        //         </div>
+        //         <div classNameName="card-body pt-4 bg-grey">
+        //             <div classNameName="chat-content" id="chat-body" >
+        //             { socket && (
                         
-                        <div className="chat-container">
+        //                 <div classNameName="chat-container">
 
-                        {
-                            messages.map(m => {
-                                return <Message message={m.message} fromSelene={m.fromSelene}/>
-                            })
-                        }
+        //                 {
+        //                     messages.map(m => {
+        //                         console.log(m);
+        //                         return <Message message={m.message} fromSelene={m.fromSelene} />
+        //                     })
+        //                 }
                         
-                        </div>
-                        )
-                    }
-                    </div>
-                </div>
-                <div className="card-footer">
-                    <div className="message-form d-flex flex-direction-column align-items-center">
-                        <a href="http://" className="black"><i data-feather="smile"></i></a>
-                        <div className="d-flex flex-grow-1 ml-4">
-                            <input 
-                            id="input-text" 
-                            type="text" 
-                            className="form-control" 
-                            placeholder="Type your message.." 
-                            style={{marginRight: '10px'}} 
-                            onChange={(e) => setCurrentMessage(e.target.value)}
-                            value={currentMessage}
-                            />
-                            <button 
-                            className="btn btn-primary"
-                            onClick={sendMessage}
+        //                 </div>
+        //                 )
+        //             }
+        //             </div>
+        //         </div>
+        //         <div classNameName="card-footer">
+        //             <div classNameName="message-form d-flex flex-direction-column align-items-center">
+        //                 <a href="http://" classNameName="black"><i data-feather="smile"></i></a>
+        //                 <div classNameName="d-flex flex-grow-1 ml-4">
+        //                     <input 
+        //                     id="input-text" 
+        //                     type="text" 
+        //                     classNameName="form-control" 
+        //                     placeholder="Type your message.." 
+        //                     style={{marginRight: '10px'}} 
+        //                     onChange={(e) => setCurrentMessage(e.target.value)}
+        //                     value={currentMessage}
+        //                     />
+        //                     <button 
+        //                     classNameName="btn btn-primary"
+        //                     onClick={sendMessage}
                             
-                            >Send</button>
-                        </div>
-                    </div>
-                </div>
+        //                     >Send</button>
+        //                 </div>
+        //             </div>
+        //         </div>
 
-            </div>
+        //     </div>
                
-        </div>
+        // </div>
     )
 
 }
