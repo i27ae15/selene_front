@@ -6,9 +6,16 @@ import './Chat.styles.css';
 
 const socket = new WebSocket(`ws://localhost:8000/chat/testing/`);
 
+
 socket.onopen = (e) => {
-    console.log('here');
-    socket.send('Hi there!');
+
+    let object = {
+        'message': 'Hello Selene',
+        'fromSelene': true,
+        'messageType': 'text',
+    }
+
+    socket.send(JSON.stringify(object));
 }
 
 function Chat() {
@@ -18,57 +25,53 @@ function Chat() {
 
     
     socket.onmessage = (data) => {
-        console.log(data);
-        let message = data.data;
-        let messageObject = {fromSelene: false};
-        let iterations = 0;
-        let separatorAt;
 
-        while (true){
-            
-            separatorAt = message.indexOf('%@%');
+        let response = JSON.parse(data.data);
+        
+        response.responses.forEach(element => {
+            element.fromSelene = true;
+        });
 
-            if (separatorAt == -1){
-                break;
-            }
-
-            if (iterations == 0){
-                messageObject.message = message.slice(0, separatorAt);
-            
-            } else if (iterations == 1){
-                messageObject.messageType = message.slice(0, separatorAt);
-            
-            } else if (iterations == 2){
-                messageObject.label = message.slice(0, separatorAt) == 'true';
-            }
-            message = message.slice(separatorAt + 3);
-            iterations++;
-
-        }
-
-        data.data.substring()
-
-        setMessages([...messages, messageObject]);
+        setMessages([...messages, ...response.responses]);    
 
     }
 
     
     function sendMessage() {
-        socket.send(currentMessage);
 
-        let message = {
+        let messageObject = {
             'message': currentMessage,
-            'fromSelene': false,
-        };
+            'fromSelene': true,
+            'messageType': 'text',
+        }
 
-        setMessages([...messages, message]);
+        socket.send(JSON.stringify(messageObject));
+
+        messageObject.fromSelene = false;
+        setMessages([...messages, messageObject]);
         setCurrentMessage('');
+    }
+
+    function sendOption(option) {
+
+        let messageObject = {
+            'option': option,
+            'fromSelene': true,
+            'messageType': 'option',
+        }
+
+        socket.send(JSON.stringify(messageObject));
+
+        messageObject.fromSelene = false;
+        // setMessages([...messages, messageObject]);
+        // setCurrentMessage('');
     }
 
 
     return (
 
         <section style={{backgroundColor: "#eee"}}>
+             
             <div className="container py-5">
 
                 <div className="row d-flex justify-content-center">
@@ -76,27 +79,42 @@ function Chat() {
 
                         <div className="card" id="chat2">
                             <div className="card-header d-flex justify-content-between align-items-center p-3">
-                                <h5 className="mb-0">Chat</h5>
+                                <h5 className="mb-0">Selene</h5>
                             </div>
 
-                            { socket && 
-                                (
-                                <div className="card-body" data-mdb-perfect-scrollbar="true" style={{position: "relative"}}>
-            
-                                {
-                                    messages.map(m => {
-                                        return <Message message={m.message} fromSelene={m.fromSelene} />
-                                    })
-                                }
-                                
+                            <div className="card-body" data-mdb-perfect-scrollbar="true" style={{position: "relative"}}>
+                                                  
+
+                                <div className='banner'>
+                                    {/* This banner must be passed when the object is the socket connectoin is made */}
+                                    <img src="https://cdn.mos.cms.futurecdn.net/HsDtpFEHbDpae6wBuW5wQo-1200-80.jpg" alt="image-banner" className='image-banner'/>
+                                    <br />
+                                    <br />
+                                    <h4>Hello over there, come here and learn what a black hole is</h4>
+                                    <hr />
                                 </div>
-                                )
-                            }
+                                        
+
+                                { 
+                                    socket && 
+                                    (
+                                    
+                                        messages.map(m => {
+                                            return <Message message={m.message} fromSelene={m.fromSelene} 
+                                            inputType={m.input_type} label={m.label} url={m.url} 
+                                            options={m.options} sendOption={sendOption}/>
+                                        })
+                                    
+                                    )
+                                }   
+
+                            </div>
+
 
 
                             <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp" alt="avatar 3" 
-                                style={{width: "40px", height: "100%"}} />
+                                <img src="https://www.latercera.com/resizer/2rH-wOMx8a8WW6ACQO8A5U2a7fg=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/copesa/LDHLZD4SMBAKXNJBT7VKNRKYOQ.jpeg" alt="avatar 3" 
+                                style={{width: "40px", height: "100%", borderRadius: "50%"}} />
                                 <input type="text" className="form-control form-control-lg" id="exampleFormControlInput1" placeholder="Type message" value={currentMessage} onChange={(e) => setCurrentMessage(e.target.value)}/>
                                 <a className="ms-3" href="#!" onClick={sendMessage} ><i className="fas fa-paper-plane"></i>Send</a>
                             </div>
