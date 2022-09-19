@@ -10,11 +10,12 @@ function Message(messageObject) {
                 messageObject.messageType === 'text' ?
                 (
                     <div className="d-flex flex-row justify-content-start">
-                        <img src="https://2.bp.blogspot.com/-N-cqs4IV-eo/UQCn0uEEP5I/AAAAAAAAABY/UY9p6pW7jk0/s1600/selene_by_raptorzysko-d5o3ufo.jpg" alt="avatar 1" style={{width: "45px", height: "100%", borderRadius: "50%"}} />
+                        <img src="https://images.nightcafe.studio/jobs/ufNqbYvmlLXFXRFrptNF/ufNqbYvmlLXFXRFrptNF--3--JIQXH_13.8889x.jpg?tr=w-1600,c-at_max" alt="avatar 1" style={{width: "45px", height: "100%", borderRadius: "50%"}} />
                         <div>
                             <p className="small p-2 ms-3 mb-1 rounded-3" style={{backgroundColor: "#f5f6f7"}}>{messageObject.message}</p>
                             {/* <p className="small ms-3 mb-3 rounded-3 text-muted">23:58</p> */}
                         </div>
+                        {messageObject.activateChat()}
                     </div>
                 )
 
@@ -22,33 +23,64 @@ function Message(messageObject) {
 
                 (
                     <div className='banner banner-in-chat'>
-                        {/* This banner must be passed when the object is the socket connectoin is made */}
                         <img src={messageObject.url} alt="image-banner" className='image-banner'/>
                         <br />
                         <br />
-                        <h4>{messageObject.message}</h4>
+                        <h4>{messageObject.title}</h4>
+                        <p>{messageObject.description}</p>
                         <hr />
+                        <div className="d-flex flex-row justify-content-start">
+                            <img src="https://images.nightcafe.studio/jobs/ufNqbYvmlLXFXRFrptNF/ufNqbYvmlLXFXRFrptNF--3--JIQXH_13.8889x.jpg?tr=w-1600,c-at_max" alt="avatar 1" style={{width: "45px", height: "100%", borderRadius: "50%"}} />
+                            <div>
+                                <p className="small p-2 ms-3 mb-1 rounded-3" style={{backgroundColor: "#f5f6f7"}}>{messageObject.message}</p>
+                                {/* <p className="small ms-3 mb-3 rounded-3 text-muted">23:58</p> */}
+                            </div>
+                        </div>
+                        {messageObject.activateChat()}
                     </div>
                 )
 
-                : messageObject.messageType === 'options' && 
+                : messageObject.messageType === 'input' && 
+                (   
+                    <>
+                    {
+                        messageObject.inputType === 'options' && 
+                        (
+                            <div className='optionsContainer' style={{textAlign: "center"}}>
+                                <h4>{messageObject.message}</h4>
+                                <div className='options-container row g-3'>
 
-                (
-                    <div className='options-container row g-3'>
+                                    {
+                                        messageObject.options.map((option, index) => {
+                                            console.log(messageObject);
+                                            if (messageObject.selectedOption >= -1) {
+                                                if (messageObject.selectedOption === index) {
+                                                    return (
+                                                        <div className='col-4'>
+                                                            <button type="button" class="btn btn-outline-dark btn-lg btn-selene" value={option} disabled={true}>{option}</button>
+                                                        </div>
+                                                    )
+                                                }
 
-                        {
-                            messageObject.options.map((option, index) => {
-                                return (
-                                    <div className='col-4'>
-                                        <button type="button" class="btn btn-outline-dark btn-lg btn-selene" value={index} 
-                                        onClick={(e) => {messageObject.sendOption(e.target.value)}}>{option}</button>
-                                    </div> 
-                                )
-                            })
-                        }        
+                                            } else {
+                                                return (
+                                                    <div className='col-4'>
+                                                        <button type="button" class="btn btn-outline-dark btn-lg btn-selene" value={option} 
+                                                        onClick={(e) => {messageObject.sendOption(e.target.value, index)}}>{option}</button>
+                                                    </div> 
+                                                )
+                                            }
 
-                    </div> 
 
+                                            
+                                        })
+                                    }        
+                                </div>
+                                {messageObject.deactivateChat()}
+                            </div>
+                        )
+                    }
+                    </>
                 )
             )
 
@@ -60,6 +92,7 @@ function Message(messageObject) {
                     <div>
                         <p className="small p-2 ms-3 mb-1 rounded-3" style={{backgroundColor: "#f5f6f7"}}>{messageObject.message}</p>
                     </div>
+                    {messageObject.activateChat()}
                 </div> 
             )
 
