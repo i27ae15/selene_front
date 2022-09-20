@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import Message from '../message/Message.component';
 
@@ -23,8 +23,17 @@ function Chat() {
     const [messages, setMessages] = useState([]);
     const [currentMessage, setCurrentMessage] = useState();
     const [canWrite, setCanWrite] = useState(true);
-
+    const messagesEndRef = useRef(null)
     
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages]);
+    
+
     socket.onmessage = (data) => {
 
         let response = JSON.parse(data.data);
@@ -37,9 +46,9 @@ function Chat() {
 
     }
 
-    useEffect(() => {
-        // action on update of movies
-    }, [messages]);
+    // useEffect(() => {
+    //     // action on update of movies
+    // }, [messages]);
 
     
     function sendMessage() {
@@ -110,24 +119,25 @@ function Chat() {
                                 <h5 className="mb-0">Selene</h5>
                             </div>
 
-                            <div className="card-body" data-mdb-perfect-scrollbar="true" style={{position: "relative"}}>
+                            <div className="card-body" data-mdb-perfect-scrollbar="true" style={{position: "relative", overflowY: 'scroll', height: '450px'}}>
                                                   
 
                                 <div className='banner'>
                                     {/* This banner must be passed when the socket connection is initialized*/}
-                                    <img src="https://cdn.mos.cms.futurecdn.net/HsDtpFEHbDpae6wBuW5wQo-1200-80.jpg" alt="image-banner" className='image-banner'/>
+                                    <img src="https://images.nightcafe.studio/jobs/T00gudABG5TqSEpoJl1d/T00gudABG5TqSEpoJl1d--2--BFO7Q_8x.jpg?tr=w-1080,c-at_max" alt="image-banner" className='image-banner'/>
                                     <br />
                                     <br />
-                                    <h4>Hello over there, come here and learn what a black hole is</h4>
+                                    <h4>Hello over there, I am Selene, the Titan of the Moon</h4>
                                     <hr />
                                 </div>
-                                        
+                                
 
                                 { 
                                     socket && 
                                     (
                                     
                                         messages.map(m => {
+
                                             return <Message message={m.message} fromSelene={m.fromSelene}
                                             messageType={m.type} inputType={m.input_type} label={m.label} 
                                             url={m.url} title={m.title} description={m.description} 
@@ -139,6 +149,9 @@ function Chat() {
                                     
                                     )
                                 }   
+
+                                <div ref={messagesEndRef} />
+
 
                             </div>
 

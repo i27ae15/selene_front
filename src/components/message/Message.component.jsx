@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
+import './Message.styles.css'
+
 
 function Message(messageObject) {
+
+    let seleneImage = 'https://images.nightcafe.studio/jobs/ot3Uy98JQQNKb48EukXZ/ot3Uy98JQQNKb48EukXZ--3--Y57QM_2x.jpg?tr=w-1080,c-at_max'
+
+    // s https://images.nightcafe.studio/jobs/ot3Uy98JQQNKb48EukXZ/ot3Uy98JQQNKb48EukXZ--3--Y57QM_2x.jpg?tr=w-1080,c-at_max
+
+    // black hole https://images.nightcafe.studio/jobs/r5Cssbuno2v1lNqKX1bV/r5Cssbuno2v1lNqKX1bV--1--QOU65_2x.jpg?tr=w-1080,c-at_max
 
     return (
         
@@ -9,8 +17,8 @@ function Message(messageObject) {
             (
                 messageObject.messageType === 'text' ?
                 (
-                    <div className="d-flex flex-row justify-content-start">
-                        <img src="https://images.nightcafe.studio/jobs/ufNqbYvmlLXFXRFrptNF/ufNqbYvmlLXFXRFrptNF--3--JIQXH_13.8889x.jpg?tr=w-1600,c-at_max" alt="avatar 1" style={{width: "45px", height: "100%", borderRadius: "50%"}} />
+                    <div className="d-flex flex-row justify-content-start chat-message">
+                        <img src={seleneImage} className='message-avatar' alt="avatar 1"/>
                         <div>
                             <p className="small p-2 ms-3 mb-1 rounded-3" style={{backgroundColor: "#f5f6f7"}}>{messageObject.message}</p>
                             {/* <p className="small ms-3 mb-3 rounded-3 text-muted">23:58</p> */}
@@ -30,7 +38,7 @@ function Message(messageObject) {
                         <p>{messageObject.description}</p>
                         <hr />
                         <div className="d-flex flex-row justify-content-start">
-                            <img src="https://images.nightcafe.studio/jobs/ufNqbYvmlLXFXRFrptNF/ufNqbYvmlLXFXRFrptNF--3--JIQXH_13.8889x.jpg?tr=w-1600,c-at_max" alt="avatar 1" style={{width: "45px", height: "100%", borderRadius: "50%"}} />
+                            <img src={seleneImage} className='message-avatar' alt="avatar 1"/>
                             <div>
                                 <p className="small p-2 ms-3 mb-1 rounded-3" style={{backgroundColor: "#f5f6f7"}}>{messageObject.message}</p>
                                 {/* <p className="small ms-3 mb-3 rounded-3 text-muted">23:58</p> */}
@@ -87,8 +95,9 @@ function Message(messageObject) {
             :
 
             (
-                <div className="d-flex flex-row justify-content-end">
-                    <img src="https://www.latercera.com/resizer/2rH-wOMx8a8WW6ACQO8A5U2a7fg=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/copesa/LDHLZD4SMBAKXNJBT7VKNRKYOQ.jpeg" alt="avatar 1" style={{width: "45px", height: "100%", borderRadius: "50%"}} />
+                <div className="d-flex flex-row justify-content-end chat-message">
+                    <img src="https://www.latercera.com/resizer/2rH-wOMx8a8WW6ACQO8A5U2a7fg=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/copesa/LDHLZD4SMBAKXNJBT7VKNRKYOQ.jpeg" 
+                    alt="avatar 1" className='message-avatar'/>
                     <div>
                         <p className="small p-2 ms-3 mb-1 rounded-3" style={{backgroundColor: "#f5f6f7"}}>{messageObject.message}</p>
                     </div>
