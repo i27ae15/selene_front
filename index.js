@@ -69,7 +69,7 @@ chatContentDiv.appendChild(message);
 // avatar inside message
 let avatar = document.createElement('img');
 avatar.classList.add('avatar');
-avatar.src = 'https://www.latercera.com/resizer/2rH-wOMx8a8WW6ACQO8A5U2a7fg=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/copesa/LDHLZD4SMBAKXNJBT7VKNRKYOQ.jpeg';
+avatar.src = 'https://images.nightcafe.studio/jobs/NaAhLYpDVsv9EGS6CtxT/NaAhLYpDVsv9EGS6CtxT--4--KLKVL.jpg?tr=w-640,c-at_max';
 message.appendChild(avatar);
 
 // message-body
@@ -79,73 +79,28 @@ message.appendChild(messageBody);
 
 // message-body-text
 let messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene';
+messageBodyText.innerText = 'Hello, I am selene. How can I help you?';
 messageBody.appendChild(messageBodyText);
 
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 1';
-messageBody.appendChild(messageBodyText);
 
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
-
-messageBodyText = document.createElement('p');
-messageBodyText.innerText = 'Hello, I am selene 2';
-messageBody.appendChild(messageBodyText);
 
 // ------------------------------------------------------------------------------
 // message from Aquiles
 // message
-let message2 = document.createElement('div');
-message2.classList.add(...['media', 'media-chat', 'media-chat-reverse']);
-chatContentDiv.appendChild(message2);
+// let message2 = document.createElement('div');
+// message2.classList.add(...['media', 'media-chat', 'media-chat-reverse']);
+// chatContentDiv.appendChild(message2);
 
-// message-body
-let messageBody2 = document.createElement('div');
-messageBody2.classList.add('media-body');
-message2.appendChild(messageBody2);
+// // message-body
+// let messageBody2 = document.createElement('div');
+// messageBody2.classList.add('media-body');
+// message2.appendChild(messageBody2);
 
-// message-body-text
-let messageBodyText2 = document.createElement('p');
-messageBodyText2.innerText = 'I am fine, and you?';
-messageBody2.appendChild(messageBodyText2);
+// // message-body-text
+// let messageBodyText2 = document.createElement('p');
+// messageBodyText2.innerText = 'I am fine, and you?';
+// messageBody2.appendChild(messageBodyText2);
 
-messageBodyText2 = document.createElement('p');
-messageBodyText2.innerText = 'I am fine, and you? 1';
-messageBody2.appendChild(messageBodyText2);
-
-messageBodyText2 = document.createElement('p');
-messageBodyText2.innerText = 'I am fine, and you? 2';
-messageBody2.appendChild(messageBodyText2);
 
 // ------------------------------------------------------------------------------
 
@@ -163,6 +118,7 @@ publisherDiv.appendChild(avatarDiv);
 // input inside of publisher
 let inputDiv = document.createElement('input');
 inputDiv.classList.add('publisher-input');
+inputDiv.id = 'input-text';
 inputDiv.type = 'text';
 inputDiv.placeholder = 'Write something';
 publisherDiv.appendChild(inputDiv);
@@ -172,5 +128,100 @@ let buttonDiv = document.createElement('button');
 buttonDiv.classList.add(...['btn', 'btn-icon', 'btn-primary']);
 buttonDiv.type = 'button';
 buttonDiv.innerText = 'Send';
+buttonDiv.onclick = sendMessage;
 publisherDiv.appendChild(buttonDiv);
 
+
+// functions 
+
+const socket = new WebSocket('ws://localhost:8000/chat/testing/');
+
+function sendMessage() {
+            
+    let message = document.getElementById('input-text').value;
+
+    let object = {
+        'message': message,
+        'fromSelene': false,
+        'messageType': 'text'
+    }
+
+    socket.send(JSON.stringify(object));
+
+    // create a new html message element
+    let newMessage = document.createElement('div');
+    newMessage.classList.add(...['media', 'media-chat', 'media-chat-reverse']);
+    chatContentDiv.appendChild(newMessage);
+
+    // message-body
+    let newMessageBody = document.createElement('div');
+    newMessageBody.classList.add('media-body');
+    newMessage.appendChild(newMessageBody);
+
+    // message-body-text
+    let newMessageBodyText = document.createElement('p');
+    newMessageBodyText.innerText = message;
+    newMessageBody.appendChild(newMessageBodyText);
+
+
+    document.getElementById('input-text').value = '';
+
+
+}
+
+socket.onopen = function (e) {
+    let object = {
+        'message': 'Hello Selene',
+        'fromSelene': true,
+        'messageType': 'text',
+    }
+
+    socket.send(JSON.stringify(object));
+}
+
+
+socket.onmessage = function (e) {
+
+    let response = JSON.parse(e.data);
+
+    console.log(response)
+
+    response.responses.forEach((m) => {
+
+        let message = document.createElement('div');
+        message.classList.add(...['media', 'media-chat'])
+        chatContentDiv.appendChild(message);
+
+        // avatar inside message
+        let avatar = document.createElement('img');
+        avatar.classList.add('avatar');
+        avatar.src = 'https://images.nightcafe.studio/jobs/NaAhLYpDVsv9EGS6CtxT/NaAhLYpDVsv9EGS6CtxT--4--KLKVL.jpg?tr=w-640,c-at_max';
+        message.appendChild(avatar);
+
+        // message-body
+        let messageBody = document.createElement('div');
+        messageBody.classList.add('media-body');
+        message.appendChild(messageBody);
+
+        if (m.type === 'text') {
+            // message-body-text
+            let messageBodyText = document.createElement('p');
+            messageBodyText.innerText = m.message;
+            messageBody.appendChild(messageBodyText);
+        
+        } else if (m.messageType ==='image') {
+            // so something
+        }
+
+        
+
+    })
+
+    
+
+
+    // console.log('message', e)
+    // number_one.innerHTML = e.data
+    // socket.send(115)
+
+}
