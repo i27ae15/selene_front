@@ -1,0 +1,129 @@
+{
+    "data_to_create_model": {
+        "intents": [
+    {
+    "node": "Make appointment",
+    "patterns": ["I want to make an appointment", "I want to schedule an appointment", "I want to book an appointment", "Appointment", "Book an appointment", "Schedule an appointment", "Make an appointment", "I want to make an appointment with a doctor", "I want to schedule an appointment with a doctor", "I want to book an appointment with a doctor", "Appointment with a doctor", "Book an appointment with a doctor", "Schedule an appointment with a doctor", "Make an appointment with a doctor"],
+    "responses": [
+    {
+        "type": "input",
+        "properties": {
+            "input_type": "selene_input",
+            "input_name": "person_name"
+        },
+        "text": "Of course, please introduce your name so we can continue"
+    }
+    ],
+    
+    "steps": [
+        {
+            "node": "step_1 - Introduce the mail",
+            "patterns": [],
+            "responses": [
+                {
+                    "type": "input",
+                    "properties": {
+                        "input_type": "selene_input",
+                        "input_name": "person_email"
+                    },
+                    "text": "Please, introduce your email"
+                }
+            ]
+        },
+        {
+            "node": "select a doctor",
+            "patterns": [],
+            "responses": [
+            {
+                "type": "input",
+                "properties": {
+                    "input_type": "options",
+                    "input_name": "doctor",
+                    "options": ["Dr. John Doe", "Dr. Jane Salazar"]
+                },
+                "text": "please select the doctor"
+            }
+            ],
+            "next_node_on_option": {
+                "Dr. John Doe": "doctor_number_one",
+                "Dr. Jane Salazar": "doctor_number_two"
+            }           
+            
+        },
+        {
+            "node": "doctor_number_one",
+            "patterns": [],
+            "responses": [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "This is the first node, with doctor John Doe"
+            }
+            ],
+            "end_steps": true
+        },
+        {
+            "node": "doctor_number_two",
+            "patterns": [],
+            "responses": [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "This is the second node with doctor Jane Salazar"
+            }
+            ],
+            "end_steps": true
+        }
+    ]
+    
+    },
+    {
+        "node": "Greeting",
+        "patterns": ["Hi", "How are you", "Is anyone there?", "Hello", "Good day", "Whats up", "Hey", "Hi there", "Hello there", "Good to see you"],
+        "responses": [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "Hello, thanks for visiting us"
+            }
+        ]
+    },
+    {
+        "node": "goodbye",
+        "patterns": ["Bye", "See you later", "Goodbye", "I am leaving", "Have a nice day", "See you soon", "Bye bye", "See you later alligator", "See you later crocodile"],
+        "responses": [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "See you later, thanks for visiting us"
+            }
+        ]
+    },
+    {
+        "node": "black hole",
+        "patterns": ["What is a black hole?", "I want to know what a black hole is", "can you tell me what is a black hole?", "Black hole", "tell me what is a black hole", "I wanna know what is a black hole", "Black hole information"],
+        "responses": [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "A black hole is a region of spacetime exhibiting such strong gravitational effects that nothing—not even particles and electromagnetic radiation such as light—can escape from inside it. The theory of general relativity predicts that a sufficiently compact mass can deform spacetime to form a black hole."
+            }
+        ]
+    },
+    {
+        "node": "appointment cancellation",
+        "patterns": ["I want to cancel my appointment", "I want to cancel my appointment with a doctor", "I want to cancel my appointment with Dr. John Doe", "I want to cancel my appointment with Dr. Jane Salazar", "Cancel my appointment", "Cancel my appointment with a doctor", "Cancel my appointment with Dr. John Doe", "Cancel my appointment with Dr. Jane Salazar", "Cancel appointment", "Cancel appointment with a doctor", "Cancel appointment with Dr. John Doe", "Cancel appointment with Dr. Jane Salazar"],
+        "responses": [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "Of course, what is your email address?"
+            }
+        ]
+    }
+    ]
+    },
+    "model_name": "Make appointment model"
+    
+    
+}

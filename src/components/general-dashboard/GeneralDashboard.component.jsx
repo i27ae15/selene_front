@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
+// Styles 
 import './general-dashboard.styles.css';
 import './components.styles.css';
+import './dashboard-own.styles.css';
 
 import Sidebar from "../sidebar/Sidebar.component";
 
@@ -16,11 +18,16 @@ function GeneralDashboard() {
     A node is an object with the following structure:
 
     {
-        name: 'Node Name',
-        type: 'text' | 'input' | 'media',
+        node: 'Node Name',
 
         patterns: [...strings],
-        responses: [...objects],
+        responses: [
+            {
+                "type": "text",
+                "properties": {},
+                "text": "Hello, thanks for visiting us"
+            }
+        ]
 
         doBefore: [...objects],
         doAfter: [...objects],
@@ -29,20 +36,43 @@ function GeneralDashboard() {
         steps: [...objects],
     }
     
-    
     */
+
+    const addNewNode = () => {
+        setNodes([...nodes, {
+            node: 'Node Name',
+            patterns: [],
+            responses: [],
+            doBefore: [],
+            doAfter: [],
+            nextNodeOnOption: [],
+            steps: [],
+        }]);
+    }
+
+    const deleteNode = (nodeIndex) => {
+        let newNodes = nodes;
+        newNodes.splice(nodeIndex, 1);
+        setNodes([...newNodes]);
+    }
+
+    const updateProperty = (nodeIndex, property, value) => {
+        let newNodes = [...nodes];
+
+        newNodes[nodeIndex][property] = value;
+        setNodes(newNodes);
+    }
 
     useEffect(() => {
 
         let nodeObject = {
-            name: 'First Node',
-            type: 'text',
+            node: 'Greeting',
             responses: [
                 {
-                    message: 'Hello Selene',
-                    fromSelene: true,
-                    messageType: 'text',
-                },
+                    "type": "text",
+                    "properties": {},
+                    "text": "Hello, thanks for visiting us"
+                }
             ],
             patterns: [],
             doBefore: [],
@@ -65,7 +95,7 @@ function GeneralDashboard() {
                 <div class="main-content">
                     <section class="section">
                         <div class="section-header">
-                            <h1>Dashboard</h1>
+                            <h1>Bot Creation</h1>
                         </div>
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
@@ -133,22 +163,31 @@ function GeneralDashboard() {
                         {
                             nodes.map((node, index) => {
                                 return (
-                                    <SeleneNode nodeName={node.name} />
+                                    <SeleneNode nodeIndex={index} 
+                                                node={node}
+                                                availableNodes={nodes}
+                                                functions={{
+                                                    'updateProperty': updateProperty,
+                                                    'deleteNode': deleteNode
+                                                }} />
                                 )
                             })
                         }
 
+
+                        <div id='add-new-main-node-container'>
+
+                            <button className="btn btn-success btn-lg" onClick={addNewNode}>Add Node</button>
+
+                        </div>
                        
                     </section>
                 </div>
-                <footer class="main-footer">
-                    <div class="footer-left">
-                        Copyright &copy; 2018 <div class="bullet"></div> Design By <a href="https://nauval.in/">Muhamad
-                            Nauval Azhar</a>
-                    </div>
-                    <div class="footer-right">
 
-                    </div>
+                
+
+                <footer class="main-footer">
+                    
                 </footer>
             </div>
         </div>
