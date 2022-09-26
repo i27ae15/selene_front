@@ -65,6 +65,40 @@ sendButton.appendChild(sendIcon);
 
 document.body.appendChild(mainSection);
 
+// loading css
+
+let head  = document.getElementsByTagName('head')[0];
+
+let bootstrapLink  = document.createElement('link');
+bootstrapLink.id   = 'bootstrapLink';
+bootstrapLink.rel  = 'stylesheet';
+bootstrapLink.type = 'text/css';
+bootstrapLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css';
+bootstrapLink.media = 'all';
+head.appendChild(bootstrapLink);
+
+let fontAwesomeLink  = document.createElement('link');
+fontAwesomeLink.id   = 'fontAwesomeLink';
+fontAwesomeLink.rel  = 'stylesheet';
+fontAwesomeLink.type = 'text/css';
+fontAwesomeLink.href = 'https://use.fontawesome.com/releases/v5.7.2/css/all.css';
+fontAwesomeLink.media = 'all';
+head.appendChild(fontAwesomeLink);
+
+let seleneStylesLink  = document.createElement('link');
+seleneStylesLink.id   = 'seleneStylesLink';
+seleneStylesLink.rel  = 'stylesheet';
+seleneStylesLink.type = 'text/css';
+seleneStylesLink.href = 'https://cdn.jsdelivr.net/gh/i27ae15/selene_front@selene_chat/index.css';
+seleneStylesLink.media = 'all';
+head.appendChild(seleneStylesLink);
+
+
+// getting the auth token 
+
+let seleneTokenElement = document.querySelector('[id^="SeleneChatSourceCode-token-"]');
+let seleneToken = seleneTokenElement.id.split('-')[2];
+
 // ---------------------------------------------------------------------------------
 // functionalities
 
@@ -170,7 +204,6 @@ function sendMessage() {
 
 function sendOption(option) {
 
-    isOption = false;
 
     // trying to convert the option to a number
     let optionNumber = parseInt(option);
@@ -208,6 +241,7 @@ function sendOption(option) {
     }
 
     socket.send(JSON.stringify(object));
+    isOption = false;
 }
 
 
@@ -218,7 +252,8 @@ socket.onopen = function (e) {
     let object = {
         'message': 'hello, Selene',
         'fromSelene': false,
-        'messageType': 'text'
+        'messageType': 'text',
+        'token': seleneToken
     }
 
     socket.send(JSON.stringify(object));
