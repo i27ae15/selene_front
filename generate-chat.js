@@ -43,6 +43,14 @@ cardFooter.appendChild(cardFooterImage);
 let textInput = document.createElement('input');
 textInput.classList.add(...['form-control', 'form-control-lg']);
 textInput.placeholder = 'Type message';
+
+textInput.addEventListener('keyup', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
 cardFooter.appendChild(textInput);
 
 let sendButton = document.createElement('a');
@@ -75,8 +83,13 @@ let isOption = false;
 let currentOptions = [];
 
 
+function scrollToBottom() {
+    cardBody.scrollTop = cardBody.scrollHeight;
+}
+
+
 // create message object --------------------------------------------
-function createTextMessage(fromSlene, message) {
+function createTextMessage(fromSlene, message, text=true, link=false) {
 
     let newMessage = document.createElement('div');
 
@@ -109,13 +122,25 @@ function createTextMessage(fromSlene, message) {
         newMessageContentText.style.cssText = 'background-color: #f5f6f7; !important;';
     }
 
-    newMessageContentText.innerText = message;
+    if (text) {
+        newMessageContentText.innerText = message;
+    } else if (link) {
+        // create a new link inside the message
+        let newMessageContentLink = document.createElement('a');
+        newMessageContentLink.href = message;
+        newMessageContentLink.innerText = 'link';
+        newMessageContentLink.target = '_blank';
+        newMessageContentText.appendChild(newMessageContentLink);
+    }
+
     newMessageContent.appendChild(newMessageContentText);
 
     if (!fromSlene) {
         newMessage.appendChild(newMessageAvatar);
         newMessageContentText.classList.add( 'bg-primary');
-    }    
+    }
+
+    scrollToBottom();
 }
 
 
@@ -135,18 +160,17 @@ function sendMessage() {
     
         if (isOption) {
             sendOption(message);
-            isOption = false;
             return;
         }
 
         socket.send(JSON.stringify(object));
-        
-
     }
 }
 
 
 function sendOption(option) {
+
+    isOption = false;
 
     // trying to convert the option to a number
     let optionNumber = parseInt(option);
@@ -209,9 +233,12 @@ socket.onmessage = function (event) {
     response.responses.forEach((m) => {
 
         if (m.type === 'text') {
-            
             createTextMessage(true, m.message);
         
+        } else if (m.type === 'link') {
+                
+            createTextMessage(true, m.message, false, true);
+            
         } else if (m.type === 'media') {
 
             let imageFromSelene = document.createElement('div');
@@ -249,6 +276,9 @@ socket.onmessage = function (event) {
             if (m.input_type === 'options') {
 
                 isOption = true;
+
+                console.log('is option: ', isOption);
+
 
                 let optionsDiv = document.createElement('div');
                 optionsDiv.style.cssText = 'margin: 25px 0;';
