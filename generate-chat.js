@@ -256,6 +256,8 @@ socket.onopen = function (e) {
         'token': seleneToken
     }
 
+    console.log(object);
+
     socket.send(JSON.stringify(object));
 }
 
