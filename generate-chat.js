@@ -239,6 +239,8 @@ socket.onmessage = function (event) {
 
             if (m.message) {
 
+                createTextMessage(true, m.message);
+
             }
 
             // in the object from react, here is another object, let's see if necessary
@@ -248,6 +250,10 @@ socket.onmessage = function (event) {
 
                 isOption = true;
 
+                let optionsDiv = document.createElement('div');
+                optionsDiv.style.cssText = 'margin: 25px 0;';
+                cardBody.appendChild(optionsDiv);
+
                 m.options.forEach((o) => {
 
                     currentOptions.push(o);
@@ -256,10 +262,11 @@ socket.onmessage = function (event) {
                     newOption.classList.add(...['btn', 'btn-outline-dark', 'btn-sm', 'btn-selene']);
                     newOption.innerText = o;
                     newOption.value = o;
+                    newOption.style.cssText = 'margin: 0 5px;';
                     newOption.onclick = (e) => {
                         sendOption(e.target.value);
                     };
-                    cardBody.appendChild(newOption);
+                    optionsDiv.appendChild(newOption);
 
                 });
 
@@ -269,6 +276,4 @@ socket.onmessage = function (event) {
 
     });
 
-
-
-}
+};
