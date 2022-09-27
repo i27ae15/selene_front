@@ -1,6 +1,25 @@
+
+const seleneImage = 'https://images.nightcafe.studio/jobs/ot3Uy98JQQNKb48EukXZ/ot3Uy98JQQNKb48EukXZ--3--Y57QM_2x.jpg?tr=w-1080,c-at_max';
+const userImage = 'https://www.latercera.com/resizer/2rH-wOMx8a8WW6ACQO8A5U2a7fg=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/copesa/LDHLZD4SMBAKXNJBT7VKNRKYOQ.jpeg';
+let bannerImage = 'https://images.nightcafe.studio/jobs/T00gudABG5TqSEpoJl1d/T00gudABG5TqSEpoJl1d--2--BFO7Q_8x.jpg?tr=w-1080,c-at_max'
+let coverTitle = '';
+let coverDescription = '';
+
 let mainSection = document.createElement('section');
 mainSection.id = 'main-section'
-mainSection.style.cssText = 'position: fixed; right: 0; bottom: 0; text-align: center; width: 400px;';
+mainSection.style.cssText = 'position: fixed; right: 0; bottom: 0; text-align: center; width: 400px; visibility: hidden;';
+
+// Creating the circle button
+let showSeleneChat = document.createElement('img');
+showSeleneChat.src = seleneImage;
+showSeleneChat.style.cssText = 'width: 60px; height: 60px; border-radius: 50%; position: fixed; right: 0; bottom: 0; margin: 20px; cursor: pointer;';
+showSeleneChat.onclick = function () {
+    mainSection.style.visibility = 'visible';
+    showSeleneChat.style.visibility = 'hidden';
+}
+
+document.body.appendChild(showSeleneChat);
+
 
 let cardContainer = document.createElement('div');
 cardContainer.classList.add(...['container', 'py-5']);
@@ -18,6 +37,15 @@ let cardHeaderTitle = document.createElement('h4');
 cardHeaderTitle.classList.add('mb-0');
 cardHeaderTitle.innerText = 'Selene';
 cardHeader.appendChild(cardHeaderTitle);
+
+let closeChatButton = document.createElement('button');
+closeChatButton.classList.add(...['btn', 'btn-sm', 'btn-outline-secondary']);
+closeChatButton.innerText = 'X';
+closeChatButton.onclick = function () {
+    mainSection.style.visibility = 'hidden';
+    showSeleneChat.style.visibility = 'visible';
+};
+cardHeader.appendChild(closeChatButton);
 
 
 // Check if the perfect scrollbar perfect is needed here
@@ -65,6 +93,7 @@ sendButton.appendChild(sendIcon);
 
 document.body.appendChild(mainSection);
 
+
 // loading css
 
 let head  = document.getElementsByTagName('head')[0];
@@ -103,13 +132,6 @@ let seleneToken = seleneTokenElement.id.split('-')[2];
 // functionalities
 
 const socket = new WebSocket('ws://localhost:8000/chat/testing/');
-
-const seleneImage = 'https://images.nightcafe.studio/jobs/ot3Uy98JQQNKb48EukXZ/ot3Uy98JQQNKb48EukXZ--3--Y57QM_2x.jpg?tr=w-1080,c-at_max';
-
-const userImage = 'https://www.latercera.com/resizer/2rH-wOMx8a8WW6ACQO8A5U2a7fg=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/copesa/LDHLZD4SMBAKXNJBT7VKNRKYOQ.jpeg';
-
-const bannerImage = 'https://images.nightcafe.studio/jobs/T00gudABG5TqSEpoJl1d/T00gudABG5TqSEpoJl1d--2--BFO7Q_8x.jpg?tr=w-1080,c-at_max'
-
 
 // state
 
@@ -150,7 +172,7 @@ function createTextMessage(fromSlene, message, text=true, link=false) {
     newMessage.appendChild(newMessageContent);
 
     let newMessageContentText = document.createElement('p');
-    newMessageContentText.classList.add(...['small', 'p-2', 'ms-3', 'mb-1', 'rounded-3', 'text-white']);
+    newMessageContentText.classList.add(...['small', 'p-2', 'ms-3', 'mb-1', 'rounded-3']);
 
     if (fromSlene) {
         newMessageContentText.style.cssText = 'background-color: #f5f6f7; !important;';
@@ -158,6 +180,7 @@ function createTextMessage(fromSlene, message, text=true, link=false) {
 
     if (text) {
         newMessageContentText.innerText = message;
+        
     } else if (link) {
         // create a new link inside the message
         let newMessageContentLink = document.createElement('a');
@@ -171,7 +194,7 @@ function createTextMessage(fromSlene, message, text=true, link=false) {
 
     if (!fromSlene) {
         newMessage.appendChild(newMessageAvatar);
-        newMessageContentText.classList.add( 'bg-primary');
+        newMessageContentText.classList.add(...['bg-primary', 'text-white']);
     }
 
     scrollToBottom();
@@ -201,6 +224,7 @@ function sendMessage() {
     }
 }
 
+head.attributes.dis
 
 function sendOption(option) {
 
@@ -210,6 +234,17 @@ function sendOption(option) {
     let messageInFailure = 'Opción no válida, por favor elige una de las opciones disponibles';
 
     console.log(currentOptions);
+
+    currentOptions.forEach((opt) => {
+        if (opt.value !== option){
+            opt.remove();
+        }
+
+        if (opt.value === option) {
+            opt.setAttribute('disabled', true);
+        }
+    })
+
 
     if (optionNumber) {
         optionNumber = optionNumber - 1;
@@ -225,8 +260,12 @@ function sendOption(option) {
 
     console.log('option Selected', option);
 
+    currentOptions.forEach(element => {
+        console.log(element.value)
+    });
 
-    if (!currentOptions.includes(option)) {
+
+    if (!currentOptions.filter((opt) => opt.value === option).length) {
         createTextMessage(true, messageInFailure);
         return;
     }
@@ -242,6 +281,8 @@ function sendOption(option) {
 
     socket.send(JSON.stringify(object));
     isOption = false;
+    currentOptions = [];
+
 }
 
 
@@ -283,7 +324,7 @@ socket.onmessage = function (event) {
             cardBody.appendChild(imageFromSelene);
 
             let imageFromSeleneImage = document.createElement('img');
-            imageFromSeleneImage.src = bannerImage;
+            imageFromSeleneImage.src = m.url;
             imageFromSeleneImage.classList.add('image-banner');
             imageFromSelene.appendChild(imageFromSeleneImage);
 
@@ -323,8 +364,6 @@ socket.onmessage = function (event) {
 
                 m.options.forEach((o) => {
 
-                    currentOptions.push(o);
-
                     let newOption = document.createElement('button');
                     newOption.classList.add(...['btn', 'btn-outline-dark', 'btn-sm', 'btn-selene']);
                     newOption.innerText = o;
@@ -334,11 +373,16 @@ socket.onmessage = function (event) {
                         sendOption(e.target.value);
                     };
                     optionsDiv.appendChild(newOption);
+                    currentOptions.push(newOption);
+
 
                 });
 
             }
 
+        } else if (m.type === 'cover') {
+            console.log('this is the cover');
+            console.log(m);
         }
 
     });
