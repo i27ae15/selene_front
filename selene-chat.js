@@ -118,7 +118,7 @@ let seleneStylesLink  = document.createElement('link');
 seleneStylesLink.id   = 'seleneStylesLink';
 seleneStylesLink.rel  = 'stylesheet';
 seleneStylesLink.type = 'text/css';
-seleneStylesLink.href = 'https://cdn.jsdelivr.net/gh/i27ae15/selene_front@selene_chat/index.css';
+seleneStylesLink.href = 'https://cdn.jsdelivr.net/gh/i27ae15/selene_front@selene_chat/selene.css';
 seleneStylesLink.media = 'all';
 head.appendChild(seleneStylesLink);
 
