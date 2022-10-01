@@ -11,13 +11,13 @@ mainSection.style.cssText = 'position: fixed; right: 0; bottom: 0; text-align: c
 
 // Creating the circle button
 let showSeleneChat = document.createElement('img');
-showSeleneChat.src = seleneImage;
+// showSeleneChat.src = seleneImage;
+showSeleneChat.src = 'https://www.utalkto.com/wp-content/uploads/2022/03/logo-alligator-100.png';
 showSeleneChat.style.cssText = 'width: 60px; height: 60px; border-radius: 50%; position: fixed; right: 0; bottom: 0; margin: 20px; cursor: pointer;';
 showSeleneChat.onclick = function () {
     mainSection.style.visibility = 'visible';
     showSeleneChat.style.visibility = 'hidden';
 }
-
 document.body.appendChild(showSeleneChat);
 
 
@@ -35,7 +35,7 @@ card.appendChild(cardHeader);
 
 let cardHeaderTitle = document.createElement('h4');
 cardHeaderTitle.classList.add('mb-0');
-cardHeaderTitle.innerText = 'Selene';
+cardHeaderTitle.innerText = 'Orinoco Assistant';
 cardHeader.appendChild(cardHeaderTitle);
 
 let closeChatButton = document.createElement('button');
@@ -62,10 +62,10 @@ cardFooter.classList.add(...['card-footer', 'text-mutad', 'd-flex', 'justify-con
 card.appendChild(cardFooter);
 
 
-let cardFooterImage = document.createElement('img');
-cardFooterImage.src = 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp';
-cardFooterImage.style.cssText = 'width: 40px; height: 100%;';
-cardFooter.appendChild(cardFooterImage);
+// let cardFooterImage = document.createElement('img');
+// cardFooterImage.src = 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp';
+// cardFooterImage.style.cssText = 'width: 40px; height: 100%;';
+// cardFooter.appendChild(cardFooterImage);
 
 
 let textInput = document.createElement('input');
@@ -118,7 +118,8 @@ let seleneStylesLink  = document.createElement('link');
 seleneStylesLink.id   = 'seleneStylesLink';
 seleneStylesLink.rel  = 'stylesheet';
 seleneStylesLink.type = 'text/css';
-seleneStylesLink.href = 'https://cdn.jsdelivr.net/gh/i27ae15/selene_front@selene_chat/selene.css';
+// seleneStylesLink.href = 'https://cdn.jsdelivr.net/gh/i27ae15/selene_front@selene_chat/selene.css';
+seleneStylesLink.href = '/selene.css';
 seleneStylesLink.media = 'all';
 head.appendChild(seleneStylesLink);
 
@@ -159,11 +160,11 @@ function createTextMessage(fromSlene, message, text=true, link=false) {
     newMessageAvatar.style.cssText = 'width: 45px; height: 100%; border-radius: 50%;';
     
     if (fromSlene) {
-        newMessageAvatar.src = seleneImage;
-        newMessage.appendChild(newMessageAvatar);
+        // newMessageAvatar.src = seleneImage;
+        // newMessage.appendChild(newMessageAvatar);
         newMessage.classList.add('justify-content-start');
     } else {
-        newMessageAvatar.src = userImage;
+        // newMessageAvatar.src = userImage;
         newMessage.classList.add('justify-content-end');
     }
 
@@ -185,7 +186,7 @@ function createTextMessage(fromSlene, message, text=true, link=false) {
         // create a new link inside the message
         let newMessageContentLink = document.createElement('a');
         newMessageContentLink.href = message;
-        newMessageContentLink.innerText = 'link';
+        newMessageContentLink.innerText = message;
         newMessageContentLink.target = '_blank';
         newMessageContentText.appendChild(newMessageContentLink);
     }
@@ -193,7 +194,7 @@ function createTextMessage(fromSlene, message, text=true, link=false) {
     newMessageContent.appendChild(newMessageContentText);
 
     if (!fromSlene) {
-        newMessage.appendChild(newMessageAvatar);
+        // newMessage.appendChild(newMessageAvatar);
         newMessageContentText.classList.add(...['bg-primary', 'text-white']);
     }
 
@@ -291,7 +292,7 @@ function sendOption(option) {
 socket.onopen = function (e) {
     
     let object = {
-        'message': 'hello, Selene',
+        'message': 'What can I do next?',
         'fromSelene': false,
         'messageType': 'text',
         'token': seleneToken
@@ -323,20 +324,28 @@ socket.onmessage = function (event) {
             imageFromSelene.classList.add(...['banner', 'banner-in-chat']);
             cardBody.appendChild(imageFromSelene);
 
-            let imageFromSeleneImage = document.createElement('img');
-            imageFromSeleneImage.src = m.url;
-            imageFromSeleneImage.classList.add('image-banner');
-            imageFromSelene.appendChild(imageFromSeleneImage);
-
-            // image title
-            let imageTitle = document.createElement('h4');
-            imageTitle.innerText = m.title;
-            cardBody.appendChild(imageTitle);
+            // // image title
+            // let imageTitle = document.createElement('h4');
+            // imageTitle.innerText = m.title;
+            // cardBody.appendChild(imageTitle);
 
             // image description
             let imageDescription = document.createElement('p');
-            imageDescription.innerText = m.description;
+            // imageDescription.innerText = m.description;
+            imageDescription.innerText = `
+            Hi there, I'm Orinoco Ventures virtual assistant. Let me show you the unit
+            It's available for November 1st, one-level upper unit fourplex suite.
+            It has 3 bedrooms, 1 bathroom, a balcony, private laundry and parking available!`;
+            imageDescription.style.cssText = 'text-align: left;'
+
             cardBody.appendChild(imageDescription);
+
+            
+            let imageFromSeleneImage = document.createElement('img');
+            imageFromSeleneImage.src = 'http://localhost:8000' + m.url;
+            imageFromSeleneImage.classList.add('image-banner');
+            imageFromSelene.appendChild(imageFromSeleneImage);
+
 
             let hr = document.createElement('hr');
             cardBody.appendChild(hr);
