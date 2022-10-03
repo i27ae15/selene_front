@@ -234,50 +234,50 @@ function sendOption(option) {
     let optionNumber = parseInt(option);
     let messageInFailure = 'Opción no válida, por favor elige una de las opciones disponibles';
 
-    console.log(currentOptions);
+    // console.log(currentOptions);
 
-    currentOptions.forEach((opt) => {
-        if (opt.value !== option){
-            opt.remove();
-        }
+    // currentOptions.forEach((opt) => {
+    //     if (opt.value !== option){
+    //         opt.remove();
+    //     }
 
-        if (opt.value === option) {
-            opt.setAttribute('disabled', true);
-        }
-    })
+    //     if (opt.value === option) {
+    //         opt.setAttribute('disabled', true);
+    //     }
+    // })
 
 
-    if (optionNumber) {
-        optionNumber = optionNumber - 1;
+    // if (optionNumber) {
+    //     optionNumber = optionNumber - 1;
         
-        if (currentOptions[optionNumber]) {
-            option = currentOptions[optionNumber];
-        } else {
-            createTextMessage(true, messageInFailure);
-            return;
-        }
+    //     if (currentOptions[optionNumber]) {
+    //         option = currentOptions[optionNumber];
+    //     } else {
+    //         createTextMessage(true, messageInFailure);
+    //         return;
+    //     }
     
-    }
+    // }
 
-    console.log('option Selected', option);
+    // console.log('option Selected', option);
 
-    currentOptions.forEach(element => {
-        console.log(element.value)
-    });
+    // currentOptions.forEach(element => {
+    //     console.log(element.value)
+    // });
 
 
-    if (!currentOptions.filter((opt) => opt.value === option).length) {
-        createTextMessage(true, messageInFailure);
-        return;
-    }
+    // if (!currentOptions.filter((opt) => opt.value === option).length) {
+    //     createTextMessage(true, messageInFailure);
+    //     return;
+    // }
 
-    console.log('sending option', option);
+    // console.log('sending option', option);
 
 
     let object = {
         'message': option,
         'fromSelene': false,
-        'messageType': 'option'
+        'messageType': 'text'
     }
 
     socket.send(JSON.stringify(object));
@@ -307,7 +307,7 @@ socket.onopen = function (e) {
 socket.onmessage = function (event) {
 
     let response = JSON.parse(event.data);
-    // console.log(response);
+    console.log(response);
 
     response.responses.forEach((m) => {
 
@@ -361,6 +361,8 @@ socket.onmessage = function (event) {
         } else if (m.type === 'input') {
 
             if (m.input_type === 'options') {
+                createTextMessage(true, m.message);
+
 
                 isOption = true;
 
@@ -370,6 +372,7 @@ socket.onmessage = function (event) {
                 let optionsDiv = document.createElement('div');
                 optionsDiv.style.cssText = 'margin: 25px 0;';
                 cardBody.appendChild(optionsDiv);
+
 
                 m.options.forEach((o) => {
 
@@ -388,12 +391,6 @@ socket.onmessage = function (event) {
                 });
 
             }
-
-        } else if (m.type === 'cover') {
-            console.log('this is the cover');
-            console.log(m);
         }
-
     });
-
 };
