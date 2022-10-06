@@ -139,6 +139,8 @@ const socket = new WebSocket('ws://localhost:8000/chat/testing/');
 let isOption = false;
 let currentOptions = [];
 
+let currentInteraction = 0;
+
 
 function scrollToBottom() {
     cardBody.scrollTop = cardBody.scrollHeight;
@@ -229,12 +231,38 @@ head.attributes.dis
 
 function sendOption(option) {
 
-
-    // trying to convert the option to a number
     let optionNumber = parseInt(option);
     let messageInFailure = 'Opción no válida, por favor elige una de las opciones disponibles';
 
-    console.log(currentOptions);
+
+    if (currentInteraction < 1) {
+
+        console.log('here in the interaction');
+
+        
+        if (optionNumber) {
+            optionNumber = optionNumber - 1;
+            
+            if (currentOptions[optionNumber]) {
+                option = currentOptions[optionNumber];
+            } else {
+                createTextMessage(true, messageInFailure);
+                return;
+            }
+        }
+
+        if (!currentOptions.filter((opt) => opt.value === option).length) {
+            createTextMessage(true, messageInFailure);
+            return;
+        }
+    }
+
+    // trying to convert the option to a number
+  
+    currentOptions.forEach(element => {
+        console.log(element.value)
+    });
+
 
     currentOptions.forEach((opt) => {
         if (opt.value !== option){
@@ -247,32 +275,23 @@ function sendOption(option) {
     })
 
 
-    if (optionNumber) {
-        optionNumber = optionNumber - 1;
+    if (currentInteraction < 2) {
         
-        if (currentOptions[optionNumber]) {
-            option = currentOptions[optionNumber];
-        } else {
-            createTextMessage(true, messageInFailure);
-            return;
+
+        optionToSelect = {
+            'Red Deer': 'qfwgkjhsauidfygqweyf',
+            'Calgary': 'ytuiewrdfjkgheriu',
+            '11 Nyber': 'sdfwewasdwqf',
+            '728 Raynard': 'sdfwefsafw',
+            '736 Raynard': 'zxwfwesfwfwsfw'
         }
-    
+
+
+        option = optionToSelect[option];
+
     }
-
-    console.log('option Selected', option);
-
-    currentOptions.forEach(element => {
-        console.log(element.value)
-    });
-
-
-    if (!currentOptions.filter((opt) => opt.value === option).length) {
-        createTextMessage(true, messageInFailure);
-        return;
-    }
-
-    console.log('sending option', option);
-
+  
+    console.log('sending option', option);    
 
     let object = {
         'message': option,
@@ -283,6 +302,7 @@ function sendOption(option) {
     socket.send(JSON.stringify(object));
     isOption = false;
     currentOptions = [];
+    currentInteraction++;
 
 }
 
@@ -292,7 +312,7 @@ function sendOption(option) {
 socket.onopen = function (e) {
     
     let object = {
-        'message': 'What can I do next?',
+        'message': 'cjiowewmncweuiwhfqwxiuwkj',
         'fromSelene': false,
         'messageType': 'text',
         'token': seleneToken
@@ -332,10 +352,7 @@ socket.onmessage = function (event) {
             // image description
             let imageDescription = document.createElement('p');
             // imageDescription.innerText = m.description;
-            imageDescription.innerText = `
-            Hi there, I'm Orinoco Ventures virtual assistant. Let me show you the unit
-            It's available for November 1st, one-level upper unit fourplex suite.
-            It has 3 bedrooms, 1 bathroom, a balcony, private laundry and parking available!`;
+            imageDescription.innerText = `Hi there, I'm Orinoco Ventures virtual assistant. I'm here to help you with your questions about our properties.`;
             imageDescription.style.cssText = 'text-align: left;'
 
             cardBody.appendChild(imageDescription);
@@ -365,8 +382,9 @@ socket.onmessage = function (event) {
                 isOption = true;
 
                 console.log('is option: ', isOption);
-
-
+                
+                createTextMessage(true, m.message);
+                
                 let optionsDiv = document.createElement('div');
                 optionsDiv.style.cssText = 'margin: 25px 0;';
                 cardBody.appendChild(optionsDiv);
