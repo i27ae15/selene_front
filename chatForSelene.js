@@ -264,15 +264,15 @@ function sendOption(option) {
     });
 
 
-    currentOptions.forEach((opt) => {
-        if (opt.value !== option){
-            opt.remove();
-        }
+    // currentOptions.forEach((opt) => {
+    //     if (opt.value !== option){
+    //         opt.remove();
+    //     }
 
-        if (opt.value === option) {
-            opt.setAttribute('disabled', true);
-        }
-    })
+    //     if (opt.value === option) {
+    //         opt.setAttribute('disabled', true);
+    //     }
+    // })
 
 
     if (currentInteraction < 2) {
@@ -296,7 +296,7 @@ function sendOption(option) {
     let object = {
         'message': option,
         'fromSelene': false,
-        'messageType': 'option'
+        'messageType': 'text'
     }
 
     socket.send(JSON.stringify(object));
@@ -327,7 +327,7 @@ socket.onopen = function (e) {
 socket.onmessage = function (event) {
 
     let response = JSON.parse(event.data);
-    // console.log(response);
+    console.log(response);
 
     response.responses.forEach((m) => {
 
@@ -378,6 +378,8 @@ socket.onmessage = function (event) {
         } else if (m.type === 'input') {
 
             if (m.input_type === 'options') {
+                createTextMessage(true, m.message);
+
 
                 isOption = true;
 
@@ -388,6 +390,7 @@ socket.onmessage = function (event) {
                 let optionsDiv = document.createElement('div');
                 optionsDiv.style.cssText = 'margin: 25px 0;';
                 cardBody.appendChild(optionsDiv);
+
 
                 m.options.forEach((o) => {
 
@@ -406,12 +409,6 @@ socket.onmessage = function (event) {
                 });
 
             }
-
-        } else if (m.type === 'cover') {
-            console.log('this is the cover');
-            console.log(m);
         }
-
     });
-
 };
